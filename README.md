@@ -54,7 +54,7 @@ bool success = SaveSystem.Delete();
 ---
 Your code should look something like this:
 ```csharp
-public void Start()
+void Start()
 {
     byte[] key = new byte[] { 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F };
     if (SaveSystem.Initialize(Application.persistentDataPath, "save.dat", SaveMethod.aes, key))
