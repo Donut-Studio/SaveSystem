@@ -1,6 +1,6 @@
 ﻿/*
   Save System - Extention for Unity to use advanced saving in your game.
-  Created by Donut Studio, September 11, 2022.
+  Created by Donut Studio, September 12, 2022.
   Released into the public domain.
 */
 
@@ -23,14 +23,14 @@ namespace DonutStudio.Utilities.Saving
         public static GameSave GameSave { get; set; } = new GameSave();
 
         private static byte[] key;
-        
+
         /// <summary>
-        /// Before performing any saveing/loading initilaize this class with the given parameters. 
+        /// Initialize this class with the given parameters to start loading/saving.
         /// </summary>
-        /// <param name="_path">The path of the file.</param>
+        /// <param name="_path">The path of the file. Application.persistentDataPath is recommended!</param>
         /// <param name="_fileName">The name of the file.</param>
         /// <param name="_method">The method how you want to save/load the data.</param>
-        /// <param name="_key">If you are using AES enter a key..</param>
+        /// <param name="_key">If you are using AES, enter a key with the length of 16, 24 or 32.</param>
         /// <returns></returns>
         public static bool Initialize(string _path, string _fileName, SaveMethod _method, byte[] _key = null)
         {
@@ -43,7 +43,7 @@ namespace DonutStudio.Utilities.Saving
             
             if (Method == SaveMethod.aes)
             {
-                if (_key == null)
+                if (_key == null || (_key.Length != 16 && _key.Length != 24 && _key.Length != 32))
                     return false;
                 else
                     key = _key;
@@ -52,6 +52,18 @@ namespace DonutStudio.Utilities.Saving
             CreateDirectory();
             IsInitialized = true;
             return true;
+        }
+        /// <summary>
+        /// Initialize this class with the given parameters to start loading/saving.
+        /// </summary>
+        /// <param name="_path">The path of the file. Application.persistentDataPath is recommended!</param>
+        /// <param name="_fileName">The name of the file.</param>
+        /// <param name="_method">The method how you want to save/load the data.</param>
+        /// <param name="password">If you are using AES, enter a string representing the key (will be converted).</param>
+        /// <returns></returns>
+        public static bool Initialize(string _path, string _fileName, SaveMethod _method, string _password = null)
+        {
+            return Initialize(_path, _fileName, _method, GetKeyFromString(_password));
         }
 
         /// <summary>
@@ -272,6 +284,33 @@ namespace DonutStudio.Utilities.Saving
         public static string GetFullPath()
         {
             return Path + '/' + FileName;
+        }
+        /// <summary>
+        /// Get a key for the aes algorithm with a length of 16, 24 or 32 according to your password string.
+        /// </summary>
+        /// <param name="password">The string to convert the key from.</param>
+        /// <returns></returns>
+        public static byte[] GetKeyFromString(string password)
+        {
+            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(password);
+
+            if (bytes.Length != 16 && bytes.Length != 24 && bytes.Length != 32)
+            {
+                byte[] key;
+
+                if (bytes.Length < 16)
+                    key = new byte[16];
+                else if (bytes.Length < 24)
+                    key = new byte[24];
+                else
+                    key = new byte[32];
+
+                for (int i = 0; i < key.Length; i++)
+                    key[i] = bytes[i % bytes.Length];
+                return key;
+            }
+            else
+                return bytes;
         }
     }
 
