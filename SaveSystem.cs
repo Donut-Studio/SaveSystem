@@ -1,6 +1,6 @@
 ﻿/*
   Save System - Extention for Unity to use advanced saving in your game.
-  Created by Donut Studio, September 12, 2022.
+  Created by Donut Studio, September 13, 2022.
   Released into the public domain.
 */
 
@@ -54,16 +54,15 @@ namespace DonutStudio.Utilities.Saving
             return true;
         }
         /// <summary>
-        /// Initialize this class with the given parameters to start loading/saving.
+        /// Initialize this class with the given parameters (save method: aes) to start loading/saving.
         /// </summary>
         /// <param name="_path">The path of the file. Application.persistentDataPath is recommended!</param>
         /// <param name="_fileName">The name of the file.</param>
-        /// <param name="_method">The method how you want to save/load the data.</param>
-        /// <param name="password">If you are using AES, enter a string representing the key (will be converted).</param>
+        /// <param name="password">The password for aes encryption (will be converted into a byte[]).</param>
         /// <returns></returns>
-        public static bool Initialize(string _path, string _fileName, SaveMethod _method, string _password = null)
+        public static bool Initialize(string _path, string _fileName, string _password)
         {
-            return Initialize(_path, _fileName, _method, GetKeyFromString(_password));
+            return Initialize(_path, _fileName, SaveMethod.aes, GetKeyFromString(_password));
         }
 
         /// <summary>

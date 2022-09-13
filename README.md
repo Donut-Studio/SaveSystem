@@ -24,18 +24,23 @@ Cheers, Donut Studio!
 # Usage
 After importing you're ready to start implementing.
 Firstly, open up the `GameSave.cs` and add the data you would like to save.
-Make sure they are serializable: for example a `Vector3` should be converted to a struct and classes should have the [System.Serializable] attribute!
+Make sure they are serializable: Unity specific types (Vector3, Color, etc.) should be converted to a struct and classes should have the `[System.Serializable]` attribute!
 
 ---
 Now it's time to initialize the system and start saving/loading:
 ```csharp
 bool success = SaveSystem.Initialize(Application.persistentDataPath, "save.dat", SaveMethod.json);
 ```
-Setting up the system with different SaveMethods can be done in the `Initialize` method. 
+Setting up the system with different SaveMethods can be done in the `Initialize` method. You have to select a save method:
+> JSON: can easily be modify by any player \
+> Binary: needs some more work to be decrypted but can then be modified too \
+> AES (advenced encryption standard): nearly impossible to decrypt unless you know the password
+
+---
 If you are using AES for saving, make sure to use a key: `byte[] key = new byte[] { 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F };`! Available key sizes are 128, 192, and 256 bits (array length: 16, 24 or 32).
-To make it a bit easier for you, I've added a method for converting a string into a key:
+To make it a bit easier for you, I've added another method to use a string as a key:
 ```csharp
-bool success = SaveSystem.Initialize(Application.persistentDataPath, "save.dat", SaveMethod.aes, "your secret password");
+bool success = SaveSystem.Initialize(Application.persistentDataPath, "save.dat", "your secret password");
 ```
 
 ---
@@ -92,5 +97,5 @@ void Start()
 ***
 # Credits
 Save System - Extention for Unity to use advanced saving in your game.
-Created by Donut Studio, September 11, 2022.
+Created by Donut Studio, September 13, 2022.
 Released into the public domain.
